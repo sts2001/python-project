@@ -31,8 +31,6 @@ def get_access_token(data):
 
 def decode_token(token):
     try:
-        data = jwt.decode(token, SECRET_KEY, algorithms=[ALGO])
-        user_id: str = data.get("user_id")
-        return user_id
+        return jwt.decode(token, SECRET_KEY, algorithms=[ALGO])
     except jwt.PyJWTError:
         return None

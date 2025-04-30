@@ -1,17 +1,17 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class RegistrationModel(BaseModel):
     username: str
     password: str
     retyped_password: str
-    email: str
+    email: EmailStr
 
 
 class RegistrationSuccessModel(BaseModel):
-    id: str
+    id: int
     username: str
-    email: str
+    email: EmailStr
 
 
 class TokenModel(BaseModel):

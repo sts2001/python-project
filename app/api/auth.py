@@ -1,5 +1,4 @@
 import datetime
-import sqlite3
 
 from fastapi import (APIRouter,
                      Depends,
@@ -15,13 +14,14 @@ from app.core.config import ACCESS_TOKEN_EXP
 from app.core.security import (hash_password,
                                is_it_correct_password,
                                get_access_token)
+from app.database.postgres import Database
 
 router = APIRouter()
 
 
 @router.post("/sign_up")
 async def sign_up(data: RegistrationModel,
-                  database: sqlite3.Connection = Depends(get_database)):
+                  database: Database = Depends(get_database)):
     if not data.password == data.retyped_password:
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -49,7 +49,7 @@ async def sign_up(data: RegistrationModel,
 
 @router.post("/sign_in")
 async def sign_in(data: OAuth2PasswordRequestForm = Depends(),
-                  database: sqlite3.Connection = Depends(get_database)):
+                  database: Database = Depends(get_database)):
     user_id = database.get_user_id(data.username)
     if user_id:
         user_data = database.get_user_data(user_id)

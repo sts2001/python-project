@@ -38,6 +38,14 @@ class Database:
             return self.__cursor.fetchone()["id"]
         return None
 
+    def delete_user(self, user_id):
+        if self.__cursor:
+            self.__cursor.execute("DELETE FROM users WHERE id=%s",
+                                  (user_id,))
+            self.__conn.commit()
+            return True
+        return None
+
     def get_user_data(self, idx):
         if self.__cursor:
             self.__cursor.execute("SELECT * FROM users WHERE id=%s", (idx,))
@@ -76,6 +84,22 @@ class Database:
             self.__conn.commit()
             return self.__cursor.fetchone()[0]
         return None
+
+    def change_user_username(self, user_id, username):
+        if self.__cursor:
+            self.__cursor.execute("UPDATE users SET username = %s WHERE id = %s",
+                                  (username, user_id))
+            self.__conn.commit()
+            return True
+        return False
+
+    def change_user_password(self, user_id, password):
+        if self.__cursor:
+            self.__cursor.execute("UPDATE users SET password = %s WHERE id = %s",
+                                  (password, user_id))
+            self.__conn.commit()
+            return True
+        return False
 
     def close_connection(self):
         self.__cursor.close()
