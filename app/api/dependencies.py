@@ -1,4 +1,5 @@
 from app.database.postgres import Database
+from app.deconvolution.frt import Deconvolution
 
 
 def get_database():
@@ -7,3 +8,7 @@ def get_database():
         yield database
     finally:
         database.close_connection()
+
+
+def get_deconvolutioner():
+    return Deconvolution()

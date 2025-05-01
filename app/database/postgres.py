@@ -44,7 +44,7 @@ class Database:
                                   (user_id,))
             self.__conn.commit()
             return True
-        return None
+        return False
 
     def get_user_data(self, idx):
         if self.__cursor:
@@ -63,10 +63,11 @@ class Database:
 
     def add_job(self, status, img, user_id):
         if self.__cursor:
-            self.__cursor.execute("INSERT INTO deconvolution_jobs (status, img, user_id) VALUES (%s, %s, %s)",
-                                  (status, img, user_id))
+            self.__cursor.execute("""
+                INSERT INTO deconvolution_jobs (status, img, user_id) VALUES (%s, %s, %s) RETURNING id""",
+                                  (status, img, user_id,))
             self.__conn.commit()
-            return self.__cursor.fetchone()[0]
+            return self.__cursor.fetchone()["id"]
         return None
 
     def update_job_status(self, idx, status):
@@ -77,13 +78,38 @@ class Database:
             return True
         return False
 
-    def add_result(self, job_id, img):
+    def add_result(self, job_id, user_id, img):
         if self.__cursor:
-            self.__cursor.execute("INSERT INTO results (job_id, img) VALUES (%s, %s)",
-                                  (job_id, img))
+            self.__cursor.execute("INSERT INTO results (job_id, user_id, img) VALUES (%s, %s, %s) RETURNING id",
+                                  (job_id, user_id, img))
             self.__conn.commit()
-            return self.__cursor.fetchone()[0]
+            return self.__cursor.fetchone()["id"]
         return None
+
+    def get_result_data(self, result_id):
+        if self.__cursor:
+            self.__cursor.execute("SELECT * FROM results WHERE id=%s",
+                                  (result_id,))
+            user_data = self.__cursor.fetchone()
+            if user_data:
+                return user_data
+        return None
+
+    def get_all_results(self, user_id):
+        if self.__cursor:
+            self.__cursor.execute("SELECT id FROM results WHERE user_id=%s",
+                                  (user_id,))
+            user_data = self.__cursor.fetchall()
+            return user_data
+        return None
+
+    def delete_result(self, result_id):
+        if self.__cursor:
+            self.__cursor.execute("DELETE FROM results WHERE id=%s",
+                                  (result_id,))
+            self.__conn.commit()
+            return True
+        return False
 
     def change_user_username(self, user_id, username):
         if self.__cursor:

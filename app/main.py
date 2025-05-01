@@ -7,8 +7,9 @@ from app.core.config import ORIGINS
 
 app = FastAPI(
     title="Система деконволюции изображений",
-    description="Деконволюция - процесс, в ходе которого искажения вносимые оптической системой математически корректируются. "
-                "Система помогает улучшать изображения.",
+    description="Деконволюция - процесс, в ходе которого искажения вносимые оптической системой математически "
+                "корректируются. Система помогает улучшать изображения.\n"
+                "Автор: Татьяна Сайкина",
     version="1.2.3",
     contact={
         "name": "МФТИ",
@@ -30,4 +31,4 @@ app.add_middleware(
 
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(account_router, prefix="/account", tags=["account"])
-# app.include_router(parsing_router, prefix="/deconvolution", tags=["deconvolution"])
+app.include_router(parsing_router, prefix="/deconvolution", tags=["deconvolution"])
