@@ -1,6 +1,7 @@
 CREATE TABLE "results" (
   "id" SERIAL PRIMARY KEY,
   "job_id" integer UNIQUE NOT NULL,
+  "user_id" integer NOT NULL,
   "img" text NOT NULL
 );
 
@@ -21,3 +22,5 @@ CREATE TABLE "deconvolution_jobs" (
 ALTER TABLE "deconvolution_jobs" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "results" ADD FOREIGN KEY ("job_id") REFERENCES "deconvolution_jobs" ("id");
+
+ALTER TABLE "results" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
