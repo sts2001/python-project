@@ -3,6 +3,8 @@ import base64
 import cv2
 import numpy as np
 
+from app.core.exceptions import DeconvolutionError
+
 
 def image_array_to_base64(img_array: np.ndarray, format_: str = ".jpg") -> str:
     success, buffer = cv2.imencode(format_, img_array)
@@ -21,6 +23,8 @@ def base64_to_ndarray(base64_str: str):
         base64_ext = "." + a[0].split("/")[1]
 
     img_data = base64.b64decode(base64_str)
+    if len(img_data) == 0:
+        raise DeconvolutionError
     np_arr = np.frombuffer(img_data, np.uint8)
     img = cv2.imdecode(np_arr, cv2.IMREAD_GRAYSCALE)
     return img, base64_ext

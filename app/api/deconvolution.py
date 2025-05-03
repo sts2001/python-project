@@ -24,6 +24,11 @@ async def calculate(data: DeconvolutionInputData,
                     deconvolution: Deconvolution = Depends(get_deconvolutioner)):
     payload = decode_token(token)
     if payload:
+        if len(data.base64_img) == 0 or not data.base64_img.startswith("data:image/"):
+            return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content={"detail": f"Некорректные данные"}
+            )
         job_id = database.add_job("В процессе",
                                   data.base64_img,
                                   payload["user_id"])
@@ -32,7 +37,6 @@ async def calculate(data: DeconvolutionInputData,
                                         payload["user_id"],
                                         image_base64)
         database.update_job_status(job_id, "Завершено")
-
         return DeconvolutionOutputData(job_id=job_id,
                                        result_id=result_id,
                                        base64_img=image_base64)
