@@ -127,6 +127,15 @@ class Database:
             return True
         return False
 
+    def delete_all_records(self):
+        if self.__cursor:
+            self.__cursor.execute("DELETE FROM results")
+            self.__cursor.execute("DELETE FROM deconvolution_jobs")
+            self.__cursor.execute("DELETE FROM users")
+            self.__conn.commit()
+            return True
+        return False
+
     def close_connection(self):
         self.__cursor.close()
         self.__conn.close()
