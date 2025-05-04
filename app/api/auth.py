@@ -22,6 +22,14 @@ router = APIRouter()
 @router.post("/sign_up")
 async def sign_up(data: RegistrationModel,
                   database: Database = Depends(get_database)):
+    """
+    Эндпоинт, регистрирующий пользователей в системе.
+
+    :param data: Модель с данными RegistrationModel.
+    :param database: Объект класса Database.
+    :return: JSONResponse c кодом ошибки или RegistrationSuccessModel.
+    """
+
     if not data.password == data.retyped_password:
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -50,6 +58,14 @@ async def sign_up(data: RegistrationModel,
 @router.post("/sign_in")
 async def sign_in(data: OAuth2PasswordRequestForm = Depends(),
                   database: Database = Depends(get_database)):
+    """
+    Эндпоинт, который авторизует пользователей в системе.
+
+    :param data: Форма авторизации (username, password и т.д.).
+    :param database: Экземпляр класса Database.
+    :return: TokenModel или JSONResponse c кодом ошибки.
+    """
+
     user_id = database.get_user_id(data.username)
     if user_id:
         user_data = database.get_user_data(user_id)
@@ -75,4 +91,3 @@ async def sign_in(data: OAuth2PasswordRequestForm = Depends(),
         status_code=status.HTTP_400_BAD_REQUEST,
         content={"detail": "Пользователь с таким логином не зарегистрирован"}
     )
-

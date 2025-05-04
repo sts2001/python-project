@@ -38,7 +38,7 @@ async def change_username(data: ChangingUsername,
         )
     return JSONResponse(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        content={"detail": f"Пользователь не авторизован"}
+        content={"detail": "Пользователь не авторизован"}
     )
 
 
@@ -55,19 +55,19 @@ async def change_password(data: ChangingPassword,
                                                  data.new):
                     return JSONResponse(
                         status_code=status.HTTP_200_OK,
-                        content={"detail": f"Пароль был изменен"}
+                        content={"detail": "Пароль был изменен"}
                     )
                 return JSONResponse(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content={"detail": f"Ошибка сервера"}
+                    content={"detail": "Ошибка сервера"}
                 )
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
-            content={"detail": f"Старый пароль неверный либо новые не совпадают"}
+            content={"detail": "Старый пароль неверный либо новые не совпадают"}
         )
     return JSONResponse(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        content={"detail": f"Пользователь не авторизован"}
+        content={"detail": "Пользователь не авторизован"}
     )
 
 
@@ -83,11 +83,11 @@ async def get_user_data(token: str = Depends(o_auth2),
                             email=user_data["email"])
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content={"detail": f"Ошибка сервера"}
+            content={"detail": "Ошибка сервера"}
         )
     return JSONResponse(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        content={"detail": f"Пользователь не авторизован"}
+        content={"detail": "Пользователь не авторизован"}
     )
 
 

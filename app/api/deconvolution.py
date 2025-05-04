@@ -27,7 +27,7 @@ async def calculate(data: DeconvolutionInputData,
         if len(data.base64_img) == 0 or not data.base64_img.startswith("data:image/"):
             return JSONResponse(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                content={"detail": f"Некорректные данные"}
+                content={"detail": "Некорректные данные"}
             )
         job_id = database.add_job("В процессе",
                                   data.base64_img,
@@ -42,7 +42,7 @@ async def calculate(data: DeconvolutionInputData,
                                        base64_img=image_base64)
     return JSONResponse(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        content={"detail": f"Пользователь не авторизован"}
+        content={"detail": "Пользователь не авторизован"}
     )
 
 
@@ -68,15 +68,15 @@ async def watch(result_id: int,
                 )
             return JSONResponse(
                 status_code=status.HTTP_403_FORBIDDEN,
-                content={"detail": f"Доступ запрещен"}
+                content={"detail": "Доступ запрещен"}
             )
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
-            content={"detail": f"Результат не найден"}
+            content={"detail": "Результат не найден"}
         )
     return JSONResponse(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        content={"detail": f"Пользователь не авторизован"}
+        content={"detail": "Пользователь не авторизован"}
     )
 
 
@@ -92,23 +92,23 @@ async def delete_result(result_id: int,
                 if database.delete_result(result_id):
                     return JSONResponse(
                         status_code=status.HTTP_200_OK,
-                        content={"detail": f"Результат удален"}
+                        content={"detail": "Результат удален"}
                     )
                 return JSONResponse(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content={"detail": f"Ошибка сервера"}
+                    content={"detail": "Ошибка сервера"}
                 )
             return JSONResponse(
                 status_code=status.HTTP_403_FORBIDDEN,
-                content={"detail": f"Доступ запрещен"}
+                content={"detail": "Доступ запрещен"}
             )
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
-            content={"detail": f"Результат не найден"}
+            content={"detail": "Результат не найден"}
         )
     return JSONResponse(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        content={"detail": f"Пользователь не авторизован"}
+        content={"detail": "Пользователь не авторизован"}
     )
 
 
@@ -121,5 +121,5 @@ async def get_results(token: str = Depends(o_auth2),
         return Results(ids=[i["id"] for i in results])
     return JSONResponse(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        content={"detail": f"Пользователь не авторизован"}
+        content={"detail": "Пользователь не авторизован"}
     )

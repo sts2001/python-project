@@ -33,8 +33,8 @@ def median5x5(image):
 def med3(part):
     part = part.flatten()
     part = np.sort(part)
-    M_med = part[4]
-    return M_med
+    m_med = part[4]
+    return m_med
 
 
 @jit(nopython=True)
@@ -68,7 +68,7 @@ def get_hf(image, low_image):
 
 
 @jit(nopython=True)
-def min_max(image, *args):
+def min_max(image):
     processing_image = np.zeros_like(image)
     for i in range(1, 512 - 1):
         for j in range(1, 640 - 1):
@@ -87,14 +87,14 @@ def min_max(image, *args):
             min_0 = min(min(m00, m01), m02)
             min_1 = min(min(m10, m11), m12)
             min_2 = min(min(m20, m21), m22)
-            M_min = min(min(min_0, min_1), min_2)
+            m_min = min(min(min_0, min_1), min_2)
 
             max_0 = max(max(m00, m01), m02)
             max_1 = max(max(m10, m11), m12)
             max_2 = max(max(m20, m21), m22)
-            M_max = max(max(max_0, max_1), max_2)
+            m_max = max(max(max_0, max_1), max_2)
 
-            processing_image[i][j] = M_min / 2 + M_max / 2
+            processing_image[i][j] = m_min / 2 + m_max / 2
 
     return processing_image.astype(np.uint16)
 
@@ -128,31 +128,23 @@ def generate_map(local_size):
 
                     ind_x1 = (m + i + local_size // 2) // local_size - 1
                     if ind_x1 < 0:
-                        ind_x1 = 0
-                        ind_x2 = ind_x1
                         x1 = - local_size // 2
                         x2 = local_size // 2
                     elif ind_x1 == dim_x - 1:
-                        ind_x2 = ind_x1
                         x2 = 512 + local_size // 2
                         x1 = 512 - local_size // 2
                     else:
-                        ind_x2 = ind_x1 + 1
                         x1 = local_size // 2 + ind_x1 * local_size
                         x2 = x1 + local_size
 
                     ind_y1 = (l + j + local_size // 2) // local_size - 1
                     if ind_y1 < 0:
-                        ind_y1 = 0
-                        ind_y2 = ind_y1
                         y1 = - local_size // 2
                         y2 = local_size // 2
                     elif ind_y1 == dim_y - 1:
-                        ind_y2 = ind_y1
                         y2 = 640 + local_size // 2
                         y1 = 640 - local_size // 2
                     else:
-                        ind_y2 = ind_y1 + 1
                         y1 = local_size // 2 + ind_y1 * local_size
                         y2 = y1 + local_size
 
