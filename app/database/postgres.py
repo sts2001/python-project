@@ -22,6 +22,13 @@ class Database:
         self.__check_on_schema()
 
     def __check_on_schema(self):
+        """
+        Функция, которая проверяет на наличие схемы таблиц в базе данных.
+        Если нет, то создает их.
+
+        :return: None.
+        """
+
         if self.__cursor:
             self.__cursor.execute("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';")
             if self.__cursor.fetchone()["count"] == 0:
@@ -32,14 +39,28 @@ class Database:
 
     def add_user(self, username, password, email):
         if self.__cursor:
-            self.__cursor.execute("INSERT INTO users (username, password, email) VALUES (%s, %s, %s) RETURNING id",
-                                  (username, password, email))
+            self.__cursor.execute(
+                "INSERT INTO users (username, password, email) VALUES (%s, %s, %s) RETURNING id",
+                (username, password, email))
             self.__conn.commit()
             return self.__cursor.fetchone()["id"]
         return None
 
     def delete_user(self, user_id):
+        """
+        Функция для удаления пользователя из базы данных.
+
+        Удаляет сначала все записи пользователя в таблице results,
+        затем в deconvolution_jobs, потом самого пользователя.
+
+        :param user_id: Идентификатор пользователя в БД
+        :return: True или False
+        """
         if self.__cursor:
+            self.__cursor.execute("DELETE FROM results WHERE user_id=%s",
+                                  (user_id,))
+            self.__cursor.execute("DELETE FROM deconvolution_jobs WHERE user_id=%s",
+                                  (user_id,))
             self.__cursor.execute("DELETE FROM users WHERE id=%s",
                                   (user_id,))
             self.__conn.commit()
@@ -71,6 +92,16 @@ class Database:
         return None
 
     def update_job_status(self, idx, status):
+        """
+        Позволяет обновлять статус текущей задачи на деконволюцию.
+        Например, при создании задачи устанавливается статус "В процессе",
+        затем после выполнения "Завершено".
+
+        :param idx: Идентификатор задачи в таблице deconvolution_jobs.
+        :param status: Статус.
+        :return: True или False.
+        """
+
         if self.__cursor:
             self.__cursor.execute("UPDATE deconvolution_jobs SET status = %s WHERE id = %s",
                                   (status, idx))
@@ -128,6 +159,11 @@ class Database:
         return False
 
     def delete_all_records(self):
+        """
+        Функция, удаляющая все записи в базе данных.
+
+        :return: True или False.
+        """
         if self.__cursor:
             self.__cursor.execute("DELETE FROM results")
             self.__cursor.execute("DELETE FROM deconvolution_jobs")
@@ -137,5 +173,10 @@ class Database:
         return False
 
     def close_connection(self):
+        """
+        Функция закрытия соединения с базой данных.
+
+        :return: None.
+        """
         self.__cursor.close()
         self.__conn.close()
