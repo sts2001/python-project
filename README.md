@@ -23,7 +23,7 @@
 1.  **Клонируйте репозиторий:**
 
     ```bash
-    git clone https://github.com/tanyasaykina/python-project
+    git clone https://github.com/sts2001/python-project
     cd python-project
     ```
 
